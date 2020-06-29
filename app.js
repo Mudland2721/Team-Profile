@@ -10,7 +10,39 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-const response = [];
+const employees  = [];
+
+async function addEmployee(){
+    console.log("New employee added");
+    return await inquirer.prompt([
+        {
+            type: "list",
+            name: "role",
+            message: "Who is this new addition?",
+            choices: [
+                'Manager',
+                'Engineer',
+                "Intern",
+                "None"
+            ]
+        }
+    ]).then(function(response){
+        switch(response.role) {
+            case "Manger":
+                managersPrompt();
+                break;
+
+            case "Engineer":
+                engineersPrompt();
+                break;
+
+            case "Intern":
+                internsPrompt();
+                break;
+        }   
+
+    })
+}
 
 function managersPrompt() {
     return inquirer.prompt([
@@ -28,10 +60,14 @@ function managersPrompt() {
         message: "what is the managers email?"
         },{
         type: "input",
-        name: "officePhone",
+        name: "officeNumber",
         message: "what is the managers desk phone number?"
         },
-]).then
+]).then(function(response){
+    let manager = new Manager(response.name, response.id, response.email, response.officeNumber);
+    employees.push(manager);
+    addEmployee();
+})
 }
 
 function internsPrompt () {
@@ -53,7 +89,11 @@ function internsPrompt () {
             name: "school",
             message: "what is the school they attend?"
         },
-    ]).then
+    ]).then(function(response){
+        let intern = new Intern(response.name, response.id, response.email, response.school);
+        employees.push(intern);
+        addEmployee();
+    })
 }
 
 function engineersPrompt() {
@@ -75,27 +115,14 @@ function engineersPrompt() {
             name: "github",
             message: "what is the engineers github username?"
         },
-    ]).then
+    ]).then(function(response){
+        let engineer = new Engineer(response.name, response.id, response.email, response.github);
+        employees.push(engineer);
+        addEmployee();
+    })
 }
 
-function getName() {
-    return this.name;
-};
-function getId() {
-    return this.id;
-};
-function getEmail() {
-    return this.email;
-};
-function getPhone(){
-    return this.officePhone;
-};
-function getGithub(){
-    return this.github;
-};
-function getSchool(){
-    return this.school;
-};
+
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
