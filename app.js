@@ -12,6 +12,8 @@ const render = require("./lib/htmlRenderer");
 
 const employees  = [];
 
+addEmployee();
+// asy function w/ prompts kicks off workforce functions 
 async function addEmployee(){
     console.log("New employee added");
     return await inquirer.prompt([
@@ -26,9 +28,12 @@ async function addEmployee(){
                 "None"
             ]
         }
+        // alterations
     ]).then(function(response){
         switch(response.role) {
-            case "Manger":
+
+            case "Manager":
+                console.log('----- Selected : ', response.role)
                 managersPrompt();
                 break;
 
@@ -39,11 +44,13 @@ async function addEmployee(){
             case "Intern":
                 internsPrompt();
                 break;
-        }   
 
+            //defaults to creating file    
+            default: create();
+            
+        }   
     })
 }
-
 function managersPrompt() {
     return inquirer.prompt([
         {
@@ -62,13 +69,19 @@ function managersPrompt() {
         type: "input",
         name: "officeNumber",
         message: "what is the managers desk phone number?"
-        },
+        }
+        //push to render array 
 ]).then(function(response){
+
+    console.log(" --- INSIDE .then() of Manager prompt\n ", response)
+
     let manager = new Manager(response.name, response.id, response.email, response.officeNumber);
     employees.push(manager);
     addEmployee();
+
+
 })
-}
+}//end managersPrompt() fct def
 
 function internsPrompt () {
     return inquirer.prompt ([
@@ -121,7 +134,14 @@ function engineersPrompt() {
         addEmployee();
     })
 }
-
+// create file function 
+async function create() {
+    const outputHTML = render(employees);
+    await fs.writeFile(outputPath, outputHTML, function(err) {
+        if (err) throw err;
+        console.log("Team Created Successfully!");
+    });
+};
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
