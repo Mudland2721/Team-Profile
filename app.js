@@ -33,7 +33,6 @@ async function addEmployee(){
         switch(response.role) {
 
             case "Manager":
-                console.log('----- Selected : ', response.role)
                 managersPrompt();
                 break;
 
@@ -72,8 +71,6 @@ function managersPrompt() {
         }
         //push to render array 
 ]).then(function(response){
-
-    console.log(" --- INSIDE .then() of Manager prompt\n ", response)
 
     let manager = new Manager(response.name, response.id, response.email, response.officeNumber);
     employees.push(manager);
